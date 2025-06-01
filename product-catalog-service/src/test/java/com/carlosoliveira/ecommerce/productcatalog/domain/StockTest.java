@@ -34,4 +34,52 @@ class StockTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Stock quantity cannot be negative.");
     }
+
+
+    @Test
+    @DisplayName("Should successfully decrement stock by a positive amount")
+    void shouldDecrementStockByPositiveAmount() {
+        Stock initialStock = new Stock(50);
+
+        Stock newStock = initialStock.decrement(10);
+
+        assertThat(newStock.getQuantity()).isEqualTo(40);
+        assertThat(initialStock.getQuantity()).isEqualTo(50);
+        assertThat(newStock).isNotSameAs(initialStock);
+    }
+
+    @Test
+    @DisplayName("Should decrement stock to zero")
+    void shouldDecrementStockToZero() {
+        Stock initialStock = new Stock(10);
+
+        Stock newStock = initialStock.decrement(10);
+
+        assertThat(newStock.getQuantity()).isEqualTo(0);
+        assertThat(initialStock.getQuantity()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("Should throw IllegalArgumentException when decrementing with insufficient stock")
+    void shouldThrowExceptionWhenDecrementingWithInsufficientStock() {
+        Stock initialStock = new Stock(5);
+
+        assertThatThrownBy(() -> initialStock.decrement(10))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Insufficient stock. Current: 5, Requested: 10");
+        assertThat(initialStock.getQuantity()).isEqualTo(5);
+    }
+
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, -50})
+    @DisplayName("Should throw IllegalArgumentException when decrementing with negative amount")
+    void shouldThrowExceptionWhenDecrementingWithNegativeAmount(int negativeAmount) {
+        Stock initialStock = new Stock(100);
+
+        assertThatThrownBy(() -> initialStock.decrement(negativeAmount))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Decrement amount cannot be negative.");
+        assertThat(initialStock.getQuantity()).isEqualTo(100);
+    }
 }

@@ -22,4 +22,14 @@ public class Stock {
         }
         this.quantity = quantity;
     }
+
+    public Stock decrement(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Decrement amount cannot be negative.");
+        }
+        if (this.quantity < amount) {
+            throw new IllegalArgumentException("Insufficient stock. Current: " + this.quantity + ", Requested: " + amount);
+        }
+        return new Stock(this.quantity - amount);
+    }
 }
