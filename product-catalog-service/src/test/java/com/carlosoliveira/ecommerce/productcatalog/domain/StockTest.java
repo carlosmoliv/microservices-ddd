@@ -104,4 +104,28 @@ class StockTest {
                 .hasMessageContaining("Increment amount cannot be negative.");
         assertThat(initialStock.getQuantity()).isEqualTo(100);
     }
+
+    @Test
+    @DisplayName("Should return true when stock is available for the requested amount")
+    void shouldReturnTrueWhenStockIsAvailable() {
+        Stock stock = new Stock(50);
+
+        assertThat(stock.isAvailable(40)).isTrue();
+    }
+
+    @Test
+    @DisplayName("Should return true when stock is exactly equal to the requested amount")
+    void shouldReturnTrueWhenStockIsExactlyAvailable() {
+        Stock stock = new Stock(50);
+
+        assertThat(stock.isAvailable(50)).isTrue();
+    }
+
+    @Test
+    @DisplayName("Should return false when stock is not available for the requested amount")
+    void shouldReturnFalseWhenStockIsNotAvailable() {
+        Stock stock = new Stock(50);
+
+        assertThat(stock.isAvailable(60)).isFalse();
+    }
 }

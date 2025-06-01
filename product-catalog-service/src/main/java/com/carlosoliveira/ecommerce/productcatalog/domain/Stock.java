@@ -39,4 +39,8 @@ public class Stock {
         }
         return new Stock(this.quantity + amount);
     }
+
+    public boolean isAvailable(int amount) {
+        return this.quantity >= amount;
+    }
 }
