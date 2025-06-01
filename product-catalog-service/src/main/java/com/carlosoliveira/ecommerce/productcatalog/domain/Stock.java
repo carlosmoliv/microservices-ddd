@@ -32,4 +32,11 @@ public class Stock {
         }
         return new Stock(this.quantity - amount);
     }
+
+    public Stock increment(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Increment amount cannot be negative.");
+        }
+        return new Stock(this.quantity + amount);
+    }
 }

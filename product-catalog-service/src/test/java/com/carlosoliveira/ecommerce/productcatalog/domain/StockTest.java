@@ -35,7 +35,6 @@ class StockTest {
                 .hasMessageContaining("Stock quantity cannot be negative.");
     }
 
-
     @Test
     @DisplayName("Should successfully decrement stock by a positive amount")
     void shouldDecrementStockByPositiveAmount() {
@@ -70,7 +69,6 @@ class StockTest {
         assertThat(initialStock.getQuantity()).isEqualTo(5);
     }
 
-
     @ParameterizedTest
     @ValueSource(ints = {-1, -50})
     @DisplayName("Should throw IllegalArgumentException when decrementing with negative amount")
@@ -80,6 +78,30 @@ class StockTest {
         assertThatThrownBy(() -> initialStock.decrement(negativeAmount))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Decrement amount cannot be negative.");
+        assertThat(initialStock.getQuantity()).isEqualTo(100);
+    }
+
+    @Test
+    @DisplayName("Should successfully increment stock by a positive amount")
+    void shouldIncrementStockByPositiveAmount() {
+        Stock initialStock = new Stock(50);
+
+        Stock newStock = initialStock.increment(20);
+
+        assertThat(newStock.getQuantity()).isEqualTo(70);
+        assertThat(initialStock.getQuantity()).isEqualTo(50);
+        assertThat(newStock).isNotSameAs(initialStock);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, -20})
+    @DisplayName("Should throw IllegalArgumentException when incrementing with negative amount")
+    void shouldThrowExceptionWhenIncrementingWithNegativeAmount(int negativeAmount) {
+        Stock initialStock = new Stock(100);
+
+        assertThatThrownBy(() -> initialStock.increment(negativeAmount))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Increment amount cannot be negative.");
         assertThat(initialStock.getQuantity()).isEqualTo(100);
     }
 }
