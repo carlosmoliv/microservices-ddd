@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: product-catalog-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass123
+      POSTGRES_DB: products
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./product-catalog-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d products" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  product-catalog-service:
+    build: .
+    container_name: product-catalog-app
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/products
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: pass123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    volumes:
+      - ./target/classes:/app/BOOT-INF/classes
+      - ./src/main/resources:/app/BOOT-INF/classes
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  product-catalog-data:
