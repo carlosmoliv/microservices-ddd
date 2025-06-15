@@ -21,14 +21,9 @@ public class Product {
     private String name;
 
     @Embedded
-    @AttributeOverride(name = "quantity", column = @Column(name = "stock_quantity"))
     private Stock stock;
 
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "amount", column = @Column(name = "price_amount")),
-            @AttributeOverride(name = "currencyCode", column = @Column(name = "price_currency"))
-    })
     private Money price;
 
     @Version
@@ -70,6 +65,6 @@ public class Product {
         if (newName == null || newName.isBlank()) {
             throw new IllegalArgumentException("Product name cannot be null or empty.");
         }
-        this.name = name;
+        this.name = newName;
     }
 }
