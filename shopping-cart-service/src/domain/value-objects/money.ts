@@ -1,4 +1,5 @@
 import { ValueObject } from './value-object';
+import { CurrencyMismatchError } from '../errors/currency-mismatch.error';
 
 export class Money extends ValueObject<{ amount: number; currency: string }> {
   static zero(): Money {
@@ -22,8 +23,9 @@ export class Money extends ValueObject<{ amount: number; currency: string }> {
 
   private ensureSameCurrency(other: Money): void {
     if (this.value.currency !== other.value.currency) {
-      throw new Error(
-        `Currency mismatch: cannot operate on ${this.value.currency} and ${other.value.currency}`,
+      throw new CurrencyMismatchError(
+        this.value.currency,
+        other.value.currency,
       );
     }
   }
