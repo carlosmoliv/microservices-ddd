@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class Money {
-
+    
     @Column(nullable = false, precision = 19, scale = 4)
     private BigDecimal amount;
 
