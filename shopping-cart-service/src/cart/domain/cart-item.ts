@@ -1,67 +1,34 @@
-import { CartItemId } from './value-objects/cart-item-id';
-import { ProductId } from './value-objects/product-id';
 import { Money } from './value-objects/money';
 import { Quantity } from './value-objects/quantity';
+import { randomUUID } from 'crypto';
 
 export class CartItem {
   private constructor(
-    private readonly _id: CartItemId,
-    private readonly _productId: ProductId,
-    private _productName: string,
-    private _price: Money,
-    private _quantity: Quantity,
-    private _addedAt: Date,
+    public id: string,
+    public productId: string,
+    public productName: string,
+    public price: Money,
+    public quantity: Quantity,
   ) {}
 
   static create(
-    productId: ProductId,
+    productId: string,
     productName: string,
     price: Money,
     quantity: Quantity,
   ): CartItem {
-    return new CartItem(
-      CartItemId.generate(),
-      productId,
-      productName,
-      price,
-      quantity,
-      new Date(),
-    );
+    return new CartItem(randomUUID(), productId, productName, price, quantity);
   }
 
   updateQuantity(quantity: Quantity): void {
-    this._quantity = quantity;
+    this.quantity = quantity;
   }
 
   updatePrice(price: Money): void {
-    this._price = price;
+    this.price = price;
   }
 
   subtotal(): Money {
-    return this._price.multiply(this._quantity.value);
-  }
-
-  get id(): CartItemId {
-    return this._id;
-  }
-
-  get productId(): ProductId {
-    return this._productId;
-  }
-
-  get productName(): string {
-    return this._productName;
-  }
-
-  get price(): Money {
-    return this._price;
-  }
-
-  get quantity(): Quantity {
-    return this._quantity;
-  }
-
-  get addedAt(): Date {
-    return this._addedAt;
+    return this.price.multiply(this.quantity.value);
   }
 }

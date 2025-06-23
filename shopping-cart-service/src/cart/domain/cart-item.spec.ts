@@ -1,17 +1,15 @@
-import { ProductId } from './value-objects/product-id';
 import { Money } from './value-objects/money';
 import { Quantity } from './value-objects/quantity';
 import { CartItem } from './cart-item';
-import { CartItemId } from './value-objects/cart-item-id';
 
 describe('CartItem', () => {
-  let productId: ProductId;
+  let productId: string;
   let productName: string;
   let price: Money;
   let quantity: Quantity;
 
   beforeEach(() => {
-    productId = new ProductId('product-123');
+    productId = 'product-123';
     productName = 'Test Product';
     price = new Money({ amount: 25.99, currency: 'USD' });
     quantity = new Quantity(3);
@@ -23,12 +21,11 @@ describe('CartItem', () => {
       const cartItem = CartItem.create(productId, productName, price, quantity);
 
       // Assert
-      expect(cartItem.id).toBeInstanceOf(CartItemId);
+      expect(cartItem.id).toBeDefined();
       expect(cartItem.productId).toEqual(productId);
       expect(cartItem.productName).toBe(productName);
       expect(cartItem.price).toEqual(price);
       expect(cartItem.quantity).toEqual(quantity);
-      expect(cartItem.addedAt).toBeInstanceOf(Date);
     });
 
     it('should generate unique IDs for different cart items', () => {
@@ -38,23 +35,6 @@ describe('CartItem', () => {
 
       // Assert
       expect(item1.id).not.toEqual(item2.id);
-    });
-
-    it('should set addedAt to current date', () => {
-      // Arrange
-      const beforeCreation = new Date();
-
-      // Act
-      const cartItem = CartItem.create(productId, productName, price, quantity);
-
-      // Assert
-      const afterCreation = new Date();
-      expect(cartItem.addedAt.getTime()).toBeGreaterThanOrEqual(
-        beforeCreation.getTime(),
-      );
-      expect(cartItem.addedAt.getTime()).toBeLessThanOrEqual(
-        afterCreation.getTime(),
-      );
     });
   });
 
@@ -252,7 +232,6 @@ describe('CartItem', () => {
       const cartItem = CartItem.create(productId, productName, price, quantity);
       const originalId = cartItem.id;
       const originalProductId = cartItem.productId;
-      const originalAddedAt = cartItem.addedAt;
 
       // Act & Assert
       cartItem.updateQuantity(new Quantity(10));
@@ -260,7 +239,6 @@ describe('CartItem', () => {
 
       expect(cartItem.id).toBe(originalId);
       expect(cartItem.productId).toBe(originalProductId);
-      expect(cartItem.addedAt).toBe(originalAddedAt);
     });
   });
 });
