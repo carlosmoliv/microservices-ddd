@@ -1,9 +1,12 @@
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21-jdk-alpine
 
 WORKDIR /app
 
-COPY target/product-catalog-service-0.0.1-SNAPSHOT.jar app.jar
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
 
-EXPOSE 8081
+RUN ./mvnw dependency:go-offline
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY src ./src
+
+CMD ["./mvnw", "spring-boot:run"]
