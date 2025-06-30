@@ -56,12 +56,17 @@ services:
 
   shopping-cart-service:
     build:
-      context: ./shopping-cart-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./shopping-cart-service/Dockerfile
+    container_name: shopping-cart-app
+    command: npm run start:dev
     ports:
       - "3000:3000"
     environment:
-      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      RABBITMQ_URI: amqp://guest:guest@rabbitmq:5672
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy

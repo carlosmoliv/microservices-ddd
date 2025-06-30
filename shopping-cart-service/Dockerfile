@@ -1,15 +1,27 @@
-FROM node:22-alpine
+FROM node:22-alpine AS development
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY tsconfig.json nest-cli.json ./
+COPY src ./src
 
-RUN npm run build
+RUN npm run build iam
 
-EXPOSE 3000
+FROM node:22-alpine AS production
 
-CMD ["npm", "run", "start:prod"]
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install --only=production
+
+COPY --from=development /usr/src/app/dist ./dist
+
+CMD ["node", "dist/main"]
