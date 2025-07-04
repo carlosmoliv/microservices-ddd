@@ -39,8 +39,7 @@ public class Product {
         if (initialStock == null) {
             throw new IllegalArgumentException("Initial stock cannot be null.");
         }
-
-        this.id = UUID.randomUUID();
+        this.id = this.id == null ? UUID.randomUUID() : this.id;
         this.name = name;
         this.price = price;
         this.stock = initialStock;
