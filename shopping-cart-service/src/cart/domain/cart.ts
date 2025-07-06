@@ -38,10 +38,6 @@ export class Cart extends AggregateRoot {
   }
 
   private ensureCartIsActive(): void {
-    if (this.items.length === 0) {
-      throw new Error('Cannot modify an empty cart');
-    }
-
     // TODO: Add more conditions to check if the cart is active, such as checking if the user is authenticated or if the cart is not expired.
   }
 
