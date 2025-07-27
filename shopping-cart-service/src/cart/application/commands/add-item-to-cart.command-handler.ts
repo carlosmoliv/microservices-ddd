@@ -7,6 +7,7 @@ import { CartRepository } from '../ports/cart.repository';
 import { Cart } from '../../domain/cart';
 import { Money } from '../../domain/value-objects/money';
 import { Quantity } from '../../domain/value-objects/quantity';
+import { InsufficientStockError } from '../errors/insufficient-stock.error';
 
 @CommandHandler(AddItemToCartCommand)
 export class AddItemToCartCommandHandler
@@ -33,14 +34,14 @@ export class AddItemToCartCommandHandler
         requiredQuantity: quantity,
       }),
     );
+
     if (!productInfo) {
       throw new Error(`Product with ID ${productId} not found.`);
     }
-    if (!productInfo.hasStock) {
-      throw new Error('Insufficient stock');
-    }
+    if (!productInfo.hasStock) throw new InsufficientStockError();
 
     const mergedCart = this.eventPublisher.mergeObjectContext(cart);
+
     mergedCart.addItem(
       productId,
       productInfo.product.name,
