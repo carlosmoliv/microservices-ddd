@@ -17,23 +17,23 @@ describe('Add item to cart e2e Tests', () => {
   let cartRepository: CartRepository;
 
   beforeEach(async () => {
-    productServiceMock = mock();
-    cartEventsPublisherMock = mock();
-
     moduleFixture = await Test.createTestingModule({
       imports: [ConfigModule.forRoot({ isGlobal: true }), CartModule],
       providers: [],
     })
       .overrideProvider('PRODUCT_RPC_SERVICE')
-      .useValue(productServiceMock)
+      .useValue(mock())
       .overrideProvider('CART_EVENTS_PUBLISHER')
-      .useValue(cartEventsPublisherMock)
+      .useValue(mock())
       .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
 
     cartRepository = moduleFixture.get<CartRepository>(CartRepository);
+    productServiceMock = moduleFixture.get<MockProxy<ClientProxy>>(
+      'PRODUCT_RPC_SERVICE',
+    );
   });
 
   afterAll(async () => {
@@ -45,7 +45,7 @@ describe('Add item to cart e2e Tests', () => {
   });
 
   describe('POST /api/carts/:userId/items', () => {
-    it('should add an item to new cart', async () => {
+    it('should add an item to a new cart', async () => {
       // Arrange
       const quantity = 2;
       const productId = faker.string.uuid();
