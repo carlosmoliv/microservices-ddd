@@ -16,6 +16,16 @@ describe('Add item to cart e2e Tests', () => {
   let cartEventsPublisherMock: MockProxy<ClientProxy>;
   let cartRepository: CartRepository;
 
+  const productResponse = {
+    product: {
+      id: faker.string.uuid(),
+      name: faker.commerce.product(),
+      price: 29.99,
+      stockQuantity: faker.number.int({ min: 1, max: 1000 }),
+    },
+    hasStock: true,
+  };
+
   beforeEach(async () => {
     moduleFixture = await Test.createTestingModule({
       imports: [ConfigModule.forRoot({ isGlobal: true }), CartModule],
@@ -49,25 +59,16 @@ describe('Add item to cart e2e Tests', () => {
       // Arrange
       const quantity = 2;
       const productId = faker.string.uuid();
-      const mockProductInfo = {
-        product: {
-          id: productId,
-          name: 'Test Product',
-          price: 29.99,
-          stockQuantity: 100,
-        },
-        hasStock: true,
-      };
       const userId = faker.string.uuid();
 
-      productServiceMock.send.mockReturnValue(of(mockProductInfo));
+      productServiceMock.send.mockReturnValue(of(productResponse));
 
       // Act
-      await request(app.getHttpServer())
+      const { statusCode } = await request(app.getHttpServer())
         .post(`/api/carts/${userId}/items`)
-        .send({ productId, quantity })
-        .expect(201);
+        .send({ productId, quantity });
 
+      expect(statusCode).toBe(201);
       expect(productServiceMock.send).toHaveBeenCalledWith(
         'product.get_details_with_stock',
         {
