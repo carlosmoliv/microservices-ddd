@@ -44,6 +44,9 @@ describe('Add item to cart e2e Tests', () => {
     productServiceMock = moduleFixture.get<MockProxy<ClientProxy>>(
       'PRODUCT_RPC_SERVICE',
     );
+    cartEventsPublisherMock = moduleFixture.get<MockProxy<ClientProxy>>(
+      'CART_EVENTS_PUBLISHER',
+    );
   });
 
   afterAll(async () => {
@@ -62,6 +65,7 @@ describe('Add item to cart e2e Tests', () => {
       const userId = faker.string.uuid();
 
       productServiceMock.send.mockReturnValue(of(productResponse));
+      cartEventsPublisherMock.emit.mockReturnValue(of(null));
 
       // Act
       const { statusCode } = await request(app.getHttpServer())
@@ -77,11 +81,21 @@ describe('Add item to cart e2e Tests', () => {
         },
       );
 
+      expect(cartEventsPublisherMock.emit).toHaveBeenCalledWith(
+        'cart.item.added',
+        expect.objectContaining({
+          cartId: expect.any(String),
+          productId,
+          quantity,
+          timestamp: expect.any(String),
+        }),
+      );
+
       const savedCart = await cartRepository.findByUserId(userId);
       expect(savedCart.userId).toBe(userId);
       expect(savedCart.items).toHaveLength(1);
       expect(savedCart.items[0].productId).toBe(productId);
-      expect(savedCart.items[0].productName).toBe('Test Product');
+      expect(savedCart.items[0].productName).toBe(productResponse.product.name);
       expect(savedCart.items[0].quantity.value).toBe(quantity);
     });
 
