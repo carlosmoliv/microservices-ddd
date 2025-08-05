@@ -24,8 +24,8 @@ public class CartEventListener {
 
     @RabbitListener(queues = RabbitMQConfig.CART_EVENTS_QUEUE)
     public void handleItemAddedToCartEvent(@Payload NestJsMessageDto event) {
-        ItemAddedToCartEvent request = objectMapper.convertValue(event.data(), ItemAddedToCartEvent.class);
         try {
+            ItemAddedToCartEvent request = objectMapper.convertValue(event.data(), ItemAddedToCartEvent.class);
             productService.reserveStock(request.productId(), request.quantity());
         } catch (Exception e) {
             log.error("Failed to reserve stock: {}", e.getMessage());
