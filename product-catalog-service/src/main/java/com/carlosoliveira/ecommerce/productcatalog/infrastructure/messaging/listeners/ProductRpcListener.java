@@ -45,7 +45,7 @@ public class ProductRpcListener {
 
         Optional<ProductDetailsResponse> productDetails = productService.getProduct(request.productId());
         ProductDetailsResponse product = productDetails
-                .orElseThrow(() -> new ProductNotFoundException("Product not found: " + request.productId()));
+                .orElseThrow(() -> new ProductNotFoundException(request.productId()));
 
         StockCheckResponse stockCheck = productService.checkStock(
                 request.productId(),
