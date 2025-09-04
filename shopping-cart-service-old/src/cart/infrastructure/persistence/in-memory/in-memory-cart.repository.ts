@@ -18,6 +18,8 @@ export class InMemoryCartRepository implements CartRepository {
   }
 
   async save(cart: Cart): Promise<void> {
+    const map = new Map(this.carts);
+
     this.carts.set(cart.userId, cart);
   }
 

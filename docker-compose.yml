@@ -56,8 +56,8 @@ services:
 
   shopping-cart-service:
     build:
-      context: .
-      dockerfile: ./shopping-cart-service/Dockerfile
+      context: ./shopping-cart-service
+      dockerfile: Dockerfile
     container_name: shopping-cart-app
     command: npm run start:dev
     ports:
@@ -73,4 +73,6 @@ services:
 
 volumes:
   product-catalog-data:
+    driver: local
+  node_modules_data:
     driver: local

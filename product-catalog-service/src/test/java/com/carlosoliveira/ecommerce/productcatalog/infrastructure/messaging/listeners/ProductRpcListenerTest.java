@@ -48,7 +48,7 @@ class ProductRpcListenerTest {
         NestJsMessageDto message = new NestJsMessageDto(pattern, messageData, "1234567890");
 
         ProductDetailsResponse productDetails = createSampleProductDetails(productId);
-        when(productService.getProduct(productId)).thenReturn(Optional.of(productDetails));
+        when(productService.getProduct(productId)).thenReturn(productDetails);
         when(productService.checkStock(productId, requiredQuantity))
                 .thenReturn(new StockCheckResponse(true, availableQuantity));
 
