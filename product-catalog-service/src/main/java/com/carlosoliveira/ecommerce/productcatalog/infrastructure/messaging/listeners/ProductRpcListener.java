@@ -1,7 +1,6 @@
 package com.carlosoliveira.ecommerce.productcatalog.infrastructure.messaging.listeners;
 
 import com.carlosoliveira.ecommerce.productcatalog.application.dtos.*;
-import com.carlosoliveira.ecommerce.productcatalog.application.errors.ProductNotFoundException;
 import com.carlosoliveira.ecommerce.productcatalog.application.services.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -9,8 +8,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 @Slf4j
@@ -43,16 +40,14 @@ public class ProductRpcListener {
                 message.data(),
                 GetProductDetailsWithStockRequest.class);
 
-        Optional<ProductDetailsResponse> productDetails = productService.getProduct(request.productId());
-        ProductDetailsResponse product = productDetails
-                .orElseThrow(() -> new ProductNotFoundException(request.productId()));
+        ProductDetailsResponse productDetails = productService.getProduct(request.productId());
 
         StockCheckResponse stockCheck = productService.checkStock(
                 request.productId(),
                 request.requiredQuantity());
 
         return new ProductDetailsWithStockResponse(
-                product,
+                productDetails,
                 stockCheck.hasStock(),
                 stockCheck.availableQuantity());
     }

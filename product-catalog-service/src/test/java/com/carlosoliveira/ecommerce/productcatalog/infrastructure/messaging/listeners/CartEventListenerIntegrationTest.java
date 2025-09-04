@@ -29,6 +29,8 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 import java.time.Duration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -165,5 +167,37 @@ public class CartEventListenerIntegrationTest {
 
         Product unchangedProduct = productRepository.findById(productId).orElseThrow();
         assertThat(unchangedProduct.getStock().getQuantity()).isEqualTo(initialStock);
+    }
+
+    @Test
+    @DisplayName("Should handle optimistic locking by retrying and succeeding")
+    @Transactional(propagation = Propagation.NEVER)
+    void givenConcurrentEvents_whenReceived_thenRetriesAndSucceeds() throws InterruptedException {
+        // Arrange
+        int initialStock = 10;
+        int firstQuantity = 1;
+        int secondQuantity = 1;
+
+        var firstEvent = new ItemAddedToCartEvent(productId, UUID.randomUUID(), firstQuantity, Instant.now());
+        var secondEvent = new ItemAddedToCartEvent(productId, UUID.randomUUID(), secondQuantity, Instant.now());
+
+        var firstMessage = new NestJsMessageDto("item.added.to.cart", objectMapper.convertValue(firstEvent, Map.class), "123");
+        var secondMessage = new NestJsMessageDto("item.added.to.cart", objectMapper.convertValue(secondEvent, Map.class), "124");
+
+        // Act
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        executor.submit(() -> rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", firstMessage));
+        executor.submit(() -> rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", secondMessage));
+
+        executor.shutdown();
+        executor.awaitTermination(30, TimeUnit.SECONDS);
+
+        // Assert
+        await().atMost(Duration.ofSeconds(10))
+                .pollInterval(Duration.ofMillis(200))
+                .untilAsserted(() -> {
+                    Product updatedProduct = productRepository.findById(productId).orElseThrow();
+                    assertThat(updatedProduct.getStock().getQuantity()).isEqualTo(initialStock - firstQuantity - secondQuantity);
+                });
     }
 }
