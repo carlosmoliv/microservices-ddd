@@ -1,4 +1,4 @@
-package com.carlosoliveira.ecommerce.commonapi.objectValues;
+package com.carlosoliveira.ecommerce.common.valueObjects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -14,7 +14,7 @@ import java.util.Currency;
 @EqualsAndHashCode
 public class Money {
 
-    @Column(name="price_amount", nullable = false, precision = 19, scale = 4)
+    @Column(name = "price_amount", nullable = false, precision = 19, scale = 4)
     private BigDecimal amount;
 
     @Column(name = "price_currency", nullable = false, length = 3)

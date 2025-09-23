@@ -1,6 +1,5 @@
-package com.carlosoliveira.ecommerce.commonapi;
+package com.carlosoliveira.ecommerce.common.valueObjects;
 
-import com.carlosoliveira.ecommerce.commonapi.objectValues.Money;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
