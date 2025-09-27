@@ -1,5 +1,6 @@
  package com.carlosoliveira.ecommerce.productcatalog.domain;
 
+import com.carlosoliveira.ecommerce.common.valueObjects.Money;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -20,7 +22,7 @@ class ProductTest {
 
     @BeforeEach
     void setUp() {
-        samplePrice = new Money(new BigDecimal("99.99"), Currency.USD);
+        samplePrice = new Money(new BigDecimal("99.99"), Currency.getInstance("USD"));
         sampleStock = new Stock(100);
         sampleName = "Test Product";
     }
@@ -137,7 +139,7 @@ class ProductTest {
         Product product = new Product(sampleName, samplePrice, sampleStock);
         Money oldPrice = product.getPrice();
 
-        Money newPrice = new Money(new BigDecimal("120.00"), Currency.USD);
+        Money newPrice = new Money(new BigDecimal("120.00"), Currency.getInstance("USD"));
         product.updatePrice(newPrice);
 
         assertThat(product.getPrice()).isEqualTo(newPrice);

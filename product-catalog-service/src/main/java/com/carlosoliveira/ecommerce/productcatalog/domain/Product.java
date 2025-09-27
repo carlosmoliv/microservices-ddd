@@ -1,5 +1,7 @@
 package com.carlosoliveira.ecommerce.productcatalog.domain;
 
+import com.carlosoliveira.ecommerce.common.valueObjects.Money;
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

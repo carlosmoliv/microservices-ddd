@@ -1,7 +1,6 @@
 package com.carlosoliveira.ecommerce.productcatalog.infrastructure.messaging.listeners;
 
 import com.carlosoliveira.ecommerce.productcatalog.application.dtos.ItemAddedToCartEvent;
-import com.carlosoliveira.ecommerce.productcatalog.application.dtos.NestJsMessageDto;
 import com.carlosoliveira.ecommerce.productcatalog.application.services.ProductService;
 import com.carlosoliveira.ecommerce.productcatalog.config.RabbitMQConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,20 +14,14 @@ import org.springframework.stereotype.Component;
 public class CartEventListener {
 
     private final ProductService productService;
-    private final ObjectMapper objectMapper;
 
     public CartEventListener(ProductService productService, ObjectMapper objectMapper) {
         this.productService = productService;
-        this.objectMapper = objectMapper;
     }
 
     @RabbitListener(queues = RabbitMQConfig.CART_EVENTS_QUEUE)
-    public void handleItemAddedToCartEvent(@Payload NestJsMessageDto event) {
-        try {
-            ItemAddedToCartEvent request = objectMapper.convertValue(event.data(), ItemAddedToCartEvent.class);
-            productService.reserveStock(request.productId(), request.quantity());
-        } catch (Exception e) {
-            log.error("Failed to reserve stock: {}", e.getMessage());
-        }
+    public void handleItemAddedToCartEvent(@Payload ItemAddedToCartEvent event) {
+        log.info("Received ItemAddedToCartEvent for Product ID: {}", event.productId());
+        productService.reserveStock(event.productId(), event.quantity());
     }
 }

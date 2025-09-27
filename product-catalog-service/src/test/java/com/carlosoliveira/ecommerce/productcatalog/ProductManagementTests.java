@@ -2,7 +2,6 @@ package com.carlosoliveira.ecommerce.productcatalog;
 
 import com.carlosoliveira.ecommerce.productcatalog.application.dtos.CreateProductRequest;
 import com.carlosoliveira.ecommerce.productcatalog.application.dtos.ProductResponse;
-import com.carlosoliveira.ecommerce.productcatalog.domain.Currency;
 import com.github.javafaker.Faker;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +18,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -50,7 +50,7 @@ public class ProductManagementTests {
             var createProductRequest = new CreateProductRequest(
                     faker.commerce().productName(),
                     BigDecimal.valueOf(faker.number().randomDouble(2, 50, 1000)),
-                    Currency.USD,
+                    Currency.getInstance("USD"),
                     10
             );
 

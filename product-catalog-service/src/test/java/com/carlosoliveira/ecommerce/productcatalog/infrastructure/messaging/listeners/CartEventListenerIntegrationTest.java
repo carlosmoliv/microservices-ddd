@@ -1,10 +1,8 @@
 package com.carlosoliveira.ecommerce.productcatalog.infrastructure.messaging.listeners;
 
+import com.carlosoliveira.ecommerce.common.valueObjects.Money;
 import com.carlosoliveira.ecommerce.productcatalog.application.dtos.ItemAddedToCartEvent;
-import com.carlosoliveira.ecommerce.productcatalog.application.dtos.NestJsMessageDto;
 import com.carlosoliveira.ecommerce.productcatalog.config.RabbitMQConfig;
-import com.carlosoliveira.ecommerce.productcatalog.domain.Currency;
-import com.carlosoliveira.ecommerce.productcatalog.domain.Money;
 import com.carlosoliveira.ecommerce.productcatalog.domain.Product;
 import com.carlosoliveira.ecommerce.productcatalog.domain.Stock;
 import com.carlosoliveira.ecommerce.productcatalog.infrastructure.persistence.ProductRepository;
@@ -26,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Currency;
 import java.util.Map;
 import java.util.UUID;
 import java.time.Duration;
@@ -78,7 +77,7 @@ public class CartEventListenerIntegrationTest {
             amqpAdmin.purgeQueue(RabbitMQConfig.CART_EVENTS_QUEUE);
         } catch (Exception ignored) {}
 
-        Product product = new Product("Test Product", new Money(new BigDecimal("100.00"), Currency.USD), new Stock(10));
+        Product product = new Product("Test Product", new Money(new BigDecimal("100.00"), Currency.getInstance("USD")), new Stock(10));
         productRepository.saveAndFlush(product);
         productId = product.getId();
     }
@@ -95,15 +94,14 @@ public class CartEventListenerIntegrationTest {
         // Arrange
         int quantityToAdd = 3;
         int initialStock = 10;
-        var event = new ItemAddedToCartEvent(productId, UUID.randomUUID(), quantityToAdd, Instant.now());
-        var message = new NestJsMessageDto("item.added.to.cart", objectMapper.convertValue(event, Map.class), "123");
+        ItemAddedToCartEvent event = new ItemAddedToCartEvent(productId, UUID.randomUUID(), quantityToAdd, Instant.now());
 
         Product initialProduct = productRepository.findById(productId).orElseThrow();
         assertThat(initialProduct.getStock().getQuantity()).isEqualTo(initialStock);
 
         // Act
         System.out.println("Sending message for product ID: " + productId);
-        rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", message);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", event);
 
         // Assert
         await().atMost(Duration.ofSeconds(5))
@@ -126,12 +124,9 @@ public class CartEventListenerIntegrationTest {
         var firstEvent = new ItemAddedToCartEvent(productId, UUID.randomUUID(), firstQuantity, Instant.now());
         var secondEvent = new ItemAddedToCartEvent(productId, UUID.randomUUID(), secondQuantity, Instant.now().plusSeconds(1));
 
-        var firstMessage = new NestJsMessageDto("item.added.to.cart", objectMapper.convertValue(firstEvent, Map.class), "123");
-        var secondMessage = new NestJsMessageDto("item.added.to.cart", objectMapper.convertValue(secondEvent, Map.class), "124");
-
         // Act
-        rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", firstMessage);
-        rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", secondMessage);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", firstEvent);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", secondEvent);
 
         // Assert
         await().atMost(Duration.ofSeconds(10))
@@ -150,13 +145,12 @@ public class CartEventListenerIntegrationTest {
     void givenNonExistentProduct_whenCartEventReceived_thenNoStockChange() {
         // Arrange
         UUID nonExistentProductId = UUID.randomUUID();
-        var event = new ItemAddedToCartEvent(nonExistentProductId, UUID.randomUUID(), 3, Instant.now());
-        var message = new NestJsMessageDto("item.added.to.cart", objectMapper.convertValue(event, Map.class), "123");
+        ItemAddedToCartEvent event = new ItemAddedToCartEvent(nonExistentProductId, UUID.randomUUID(), 3, Instant.now());
 
         int initialStock = productRepository.findById(productId).orElseThrow().getStock().getQuantity();
 
         // Act
-        rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", message);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", event);
 
         // Assert
         try {
@@ -181,13 +175,10 @@ public class CartEventListenerIntegrationTest {
         var firstEvent = new ItemAddedToCartEvent(productId, UUID.randomUUID(), firstQuantity, Instant.now());
         var secondEvent = new ItemAddedToCartEvent(productId, UUID.randomUUID(), secondQuantity, Instant.now());
 
-        var firstMessage = new NestJsMessageDto("item.added.to.cart", objectMapper.convertValue(firstEvent, Map.class), "123");
-        var secondMessage = new NestJsMessageDto("item.added.to.cart", objectMapper.convertValue(secondEvent, Map.class), "124");
-
         // Act
         ExecutorService executor = Executors.newFixedThreadPool(2);
-        executor.submit(() -> rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", firstMessage));
-        executor.submit(() -> rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", secondMessage));
+        executor.submit(() -> rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", firstEvent));
+        executor.submit(() -> rabbitTemplate.convertAndSend(RabbitMQConfig.CART_EVENTS_EXCHANGE, "cart.added", secondEvent));
 
         executor.shutdown();
         executor.awaitTermination(30, TimeUnit.SECONDS);

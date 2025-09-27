@@ -1,9 +1,9 @@
 package com.carlosoliveira.ecommerce.productcatalog.application.dtos;
 
-import com.carlosoliveira.ecommerce.productcatalog.domain.Currency;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 
 public record CreateProductRequest(
         @NotBlank(message = "Product name cannot be empty")

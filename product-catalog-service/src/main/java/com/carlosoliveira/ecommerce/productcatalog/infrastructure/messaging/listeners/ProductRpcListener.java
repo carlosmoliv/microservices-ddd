@@ -21,34 +21,34 @@ public class ProductRpcListener {
         this.objectMapper = objectMapper;
     }
 
-    @RabbitListener(queues = "product_queue")
-    @SendTo
-    public Object handleProductRequest(@Payload NestJsMessageDto message) {
-        try {
-            return switch (message.pattern()) {
-                case "product.get_details_with_stock" -> getProductDetails(message);
-                default -> throw new UnsupportedOperationException("Unknown pattern: " + message.pattern());
-            };
-        } catch (Exception e) {
-            log.error("Error processing product request for pattern: {}", message.pattern(), e);
-            throw e;
-        }
-    }
-
-    private ProductDetailsWithStockResponse getProductDetails(@Payload NestJsMessageDto message) {
-        GetProductDetailsWithStockRequest request = objectMapper.convertValue(
-                message.data(),
-                GetProductDetailsWithStockRequest.class);
-
-        ProductDetailsResponse productDetails = productService.getProduct(request.productId());
-
-        StockCheckResponse stockCheck = productService.checkStock(
-                request.productId(),
-                request.requiredQuantity());
-
-        return new ProductDetailsWithStockResponse(
-                productDetails,
-                stockCheck.hasStock(),
-                stockCheck.availableQuantity());
-    }
+//    @RabbitListener(queues = "product_queue")
+//    @SendTo
+//    public Object handleProductRequest(@Payload NestJsMessageDto message) {
+//        try {
+//            return switch (message.pattern()) {
+//                case "product.get_details_with_stock" -> getProductDetails(message);
+//                default -> throw new UnsupportedOperationException("Unknown pattern: " + message.pattern());
+//            };
+//        } catch (Exception e) {
+//            log.error("Error processing product request for pattern: {}", message.pattern(), e);
+//            throw e;
+//        }
+//    }
+//
+//    private ProductDetailsWithStockResponse getProductDetails(@Payload NestJsMessageDto message) {
+//        GetProductDetailsWithStockRequest request = objectMapper.convertValue(
+//                message.data(),
+//                GetProductDetailsWithStockRequest.class);
+//
+//        ProductDetailsResponse productDetails = productService.getProduct(request.productId());
+//
+//        StockCheckResponse stockCheck = productService.checkStock(
+//                request.productId(),
+//                request.requiredQuantity());
+//
+//        return new ProductDetailsWithStockResponse(
+//                productDetails,
+//                stockCheck.hasStock(),
+//                stockCheck.availableQuantity());
+//    }
 }

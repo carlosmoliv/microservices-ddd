@@ -1,13 +1,13 @@
 package com.carlosoliveira.ecommerce.productcatalog.application.services;
 
+import com.carlosoliveira.ecommerce.common.valueObjects.Money;
+
 import com.carlosoliveira.ecommerce.productcatalog.application.dtos.CreateProductRequest;
 import com.carlosoliveira.ecommerce.productcatalog.application.dtos.ProductDetailsResponse;
 import com.carlosoliveira.ecommerce.productcatalog.application.dtos.ProductResponse;
 import com.carlosoliveira.ecommerce.productcatalog.application.dtos.StockCheckResponse;
 import com.carlosoliveira.ecommerce.productcatalog.application.errors.ProductNotFoundException;
 import com.carlosoliveira.ecommerce.productcatalog.application.errors.StockReservationException;
-import com.carlosoliveira.ecommerce.productcatalog.domain.Currency;
-import com.carlosoliveira.ecommerce.productcatalog.domain.Money;
 import com.carlosoliveira.ecommerce.productcatalog.domain.Product;
 import com.carlosoliveira.ecommerce.productcatalog.domain.Stock;
 import com.carlosoliveira.ecommerce.productcatalog.infrastructure.persistence.ProductRepository;
@@ -19,6 +19,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Currency;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class ProductService {
 
     @Transactional
     public ProductResponse createProduct(CreateProductRequest request) {
-        Money price = new Money(request.amount(), Currency.USD);
+        Money price = new Money(request.amount(), Currency.getInstance("USD"));
         Stock initialStock = new Stock(request.initialStock());
 
         Product product = new Product(request.name(), price, initialStock);

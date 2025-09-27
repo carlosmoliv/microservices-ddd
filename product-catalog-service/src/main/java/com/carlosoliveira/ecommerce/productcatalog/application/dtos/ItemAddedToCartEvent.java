@@ -4,8 +4,8 @@ import java.time.Instant;
 import java.util.UUID;
 
 public record ItemAddedToCartEvent(
-        UUID productId,
         UUID cartId,
+        UUID productId,
         int quantity,
         Instant timestamp
 ) {}
