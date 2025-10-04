@@ -1,6 +1,6 @@
 package com.carlosoliveira.ecommerce.shoppingcart.presentation;
 
-import com.carlosoliveira.ecommerce.shoppingcart.application.commandHandlers.AddItemToCartCommandHandler;
+import com.carlosoliveira.ecommerce.shoppingcart.application.commands.AddItemToCartCommandHandler;
 import com.carlosoliveira.ecommerce.shoppingcart.application.commands.AddItemToCartCommand;
 import com.carlosoliveira.ecommerce.shoppingcart.application.dtos.AddItemRequest;
 import lombok.AllArgsConstructor;

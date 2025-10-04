@@ -1,16 +1,17 @@
-package com.carlosoliveira.ecommerce.shoppingcart.application.commandHandlers;
+package com.carlosoliveira.ecommerce.shoppingcart.application.commands;
 
 import com.carlosoliveira.ecommerce.common.valueObjects.Money;
 
 import com.carlosoliveira.ecommerce.shoppingcart.application.CartRepository;
-import com.carlosoliveira.ecommerce.shoppingcart.application.commands.AddItemToCartCommand;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.Cart;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Currency;
 
+@Slf4j
 @Component
 @Transactional
 public class AddItemToCartCommandHandler implements CommandHandler<AddItemToCartCommand> {
@@ -18,7 +19,9 @@ public class AddItemToCartCommandHandler implements CommandHandler<AddItemToCart
     private final CartRepository cartRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    public AddItemToCartCommandHandler(CartRepository cartRepository, ApplicationEventPublisher eventPublisher) {
+    public AddItemToCartCommandHandler(
+            CartRepository cartRepository,
+            ApplicationEventPublisher eventPublisher) {
         this.cartRepository = cartRepository;
         this.eventPublisher = eventPublisher;
     }

@@ -1,6 +1,5 @@
-package com.carlosoliveira.ecommerce.shoppingcart.application;
+package com.carlosoliveira.ecommerce.shoppingcart.application.events;
 
-import com.carlosoliveira.ecommerce.shoppingcart.application.eventHandlers.CartEventPublisher;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.events.ItemAddedToCartEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;

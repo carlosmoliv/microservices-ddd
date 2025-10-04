@@ -1,4 +1,4 @@
-package com.carlosoliveira.ecommerce.shoppingcart.application.eventHandlers;
+package com.carlosoliveira.ecommerce.shoppingcart.application.events;
 
 import com.carlosoliveira.ecommerce.shoppingcart.config.RabbitMQConfig;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.events.ItemAddedToCartEvent;
