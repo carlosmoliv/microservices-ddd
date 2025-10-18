@@ -17,7 +17,6 @@ public class RabbitMQConfig {
     public static final String CART_EVENTS_EXCHANGE = "cart_events_exchange";
     public static final String CART_ROUTING_KEY_PATTERN = "cart.*";
 
-
     @Bean
     public TopicExchange cartEventsExchange() {
         return new TopicExchange(CART_EVENTS_EXCHANGE, true, false);
