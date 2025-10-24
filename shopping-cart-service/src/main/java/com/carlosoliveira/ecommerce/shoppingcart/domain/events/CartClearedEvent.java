@@ -1,4 +1,4 @@
-package com.carlosoliveira.ecommerce.shoppingcart.application.events;
+package com.carlosoliveira.ecommerce.shoppingcart.domain.events;
 
 import java.time.Instant;
 import java.util.List;
