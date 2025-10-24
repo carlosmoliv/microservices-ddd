@@ -51,7 +51,7 @@ public class Cart {
             newItem.setCart(this);
             this.items.add(newItem);
         }
-        this.domainEvents.add(new ItemAddedToCartEvent(this.id, productId, quantity, new Date().toInstant()));
+        this.domainEvents.add(new ItemAddedToCartEvent(this.id, productId, quantity, Instant.now()));
     }
 
     public void updateItemQuantity(UUID productId, int newQuantity) {
