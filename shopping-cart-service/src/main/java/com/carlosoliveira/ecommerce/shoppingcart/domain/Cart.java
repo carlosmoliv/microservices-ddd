@@ -1,12 +1,14 @@
 package com.carlosoliveira.ecommerce.shoppingcart.domain;
 
 import com.carlosoliveira.ecommerce.common.valueObjects.Money;
+import com.carlosoliveira.ecommerce.shoppingcart.domain.events.CartItemQuantityUpdatedEvent;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.events.ItemAddedToCartEvent;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.util.*;
 
 @Entity
@@ -50,6 +52,30 @@ public class Cart {
             this.items.add(newItem);
         }
         this.domainEvents.add(new ItemAddedToCartEvent(this.id, productId, quantity, new Date().toInstant()));
+    }
+
+    public void updateItemQuantity(UUID productId, int newQuantity) {
+        if (newQuantity == 0) {
+            throw new IllegalArgumentException("Quantity cannot be zero");
+        }
+
+        CartItem item = findItem(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Item not found in Cart"));
+
+        int previousQuantity = item.getQuantity();
+        if  (previousQuantity == newQuantity) {
+            return;
+        }
+        item.updateQuantity(newQuantity);
+        this.domainEvents.add(new CartItemQuantityUpdatedEvent(
+                this.id,
+                this.userId,
+                productId,
+                previousQuantity,
+                newQuantity,
+                newQuantity - previousQuantity,
+                Instant.now()
+        ));
     }
 
     public Collection<Object> domainEvents() {
