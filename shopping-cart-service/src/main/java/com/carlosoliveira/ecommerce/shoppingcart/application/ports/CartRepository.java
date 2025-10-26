@@ -1,4 +1,4 @@
-package com.carlosoliveira.ecommerce.shoppingcart.application;
+package com.carlosoliveira.ecommerce.shoppingcart.application.ports;
 
 import com.carlosoliveira.ecommerce.shoppingcart.domain.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;

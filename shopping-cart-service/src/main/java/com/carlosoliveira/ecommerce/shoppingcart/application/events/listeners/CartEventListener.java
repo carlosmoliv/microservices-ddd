@@ -1,5 +1,6 @@
-package com.carlosoliveira.ecommerce.shoppingcart.application.events;
+package com.carlosoliveira.ecommerce.shoppingcart.application.events.listeners;
 
+import com.carlosoliveira.ecommerce.shoppingcart.infrastructure.messaging.CartEventPublisher;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.events.CartItemQuantityUpdatedEvent;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.events.ItemAddedToCartEvent;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ItemAddedToCartEventListener {
+public class CartEventListener {
 
     private final CartEventPublisher cartEventPublisher;
 

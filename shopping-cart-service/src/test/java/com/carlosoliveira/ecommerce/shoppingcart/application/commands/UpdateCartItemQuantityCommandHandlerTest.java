@@ -1,6 +1,8 @@
 package com.carlosoliveira.ecommerce.shoppingcart.application.commands;
 
-import com.carlosoliveira.ecommerce.shoppingcart.application.CartRepository;
+import com.carlosoliveira.ecommerce.shoppingcart.application.ports.CartRepository;
+import com.carlosoliveira.ecommerce.shoppingcart.application.commands.handlers.AddItemToCartCommandHandler;
+import com.carlosoliveira.ecommerce.shoppingcart.application.commands.handlers.UpdateCartItemQuantityCommandHandler;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.events.CartItemQuantityUpdatedEvent;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.events.ItemAddedToCartEvent;
 import lombok.Getter;

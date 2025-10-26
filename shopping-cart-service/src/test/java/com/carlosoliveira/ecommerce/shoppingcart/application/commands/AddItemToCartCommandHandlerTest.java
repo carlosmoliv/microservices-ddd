@@ -1,6 +1,7 @@
 package com.carlosoliveira.ecommerce.shoppingcart.application.commands;
 
-import com.carlosoliveira.ecommerce.shoppingcart.application.CartRepository;
+import com.carlosoliveira.ecommerce.shoppingcart.application.ports.CartRepository;
+import com.carlosoliveira.ecommerce.shoppingcart.application.commands.handlers.AddItemToCartCommandHandler;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.events.ItemAddedToCartEvent;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;

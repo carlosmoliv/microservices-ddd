@@ -1,8 +1,10 @@
-package com.carlosoliveira.ecommerce.shoppingcart.application.commands;
+package com.carlosoliveira.ecommerce.shoppingcart.application.commands.handlers;
 
 import com.carlosoliveira.ecommerce.common.valueObjects.Money;
 
-import com.carlosoliveira.ecommerce.shoppingcart.application.CartRepository;
+import com.carlosoliveira.ecommerce.shoppingcart.application.ports.CartRepository;
+import com.carlosoliveira.ecommerce.shoppingcart.application.commands.AddItemToCartCommand;
+import com.carlosoliveira.ecommerce.shoppingcart.application.ports.CommandHandler;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.Cart;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
