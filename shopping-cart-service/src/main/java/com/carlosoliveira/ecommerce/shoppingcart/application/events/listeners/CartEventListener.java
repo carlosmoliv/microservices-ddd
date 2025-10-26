@@ -1,6 +1,6 @@
 package com.carlosoliveira.ecommerce.shoppingcart.application.events.listeners;
 
-import com.carlosoliveira.ecommerce.shoppingcart.infrastructure.messaging.CartEventPublisher;
+import com.carlosoliveira.ecommerce.shoppingcart.application.ports.EventPublisher;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.events.CartItemQuantityUpdatedEvent;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.events.ItemAddedToCartEvent;
 import lombok.RequiredArgsConstructor;
@@ -11,15 +11,15 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CartEventListener {
 
-    private final CartEventPublisher cartEventPublisher;
+    private final EventPublisher eventPublisher;
 
     @EventListener
     public void onItemAddedToCart(ItemAddedToCartEvent event) {
-        cartEventPublisher.handleItemAddedToCartEvent(event);
+        eventPublisher.publish(event);
     }
 
     @EventListener
     public void onCartItemQuantityUpdated(CartItemQuantityUpdatedEvent event) {
-        cartEventPublisher.handleCartItemQuantityUpdatedEvent(event);
+        eventPublisher.publish(event);
     }
 }

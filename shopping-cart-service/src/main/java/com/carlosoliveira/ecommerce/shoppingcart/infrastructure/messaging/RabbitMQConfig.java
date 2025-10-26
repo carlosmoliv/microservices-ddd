@@ -1,4 +1,4 @@
-package com.carlosoliveira.ecommerce.shoppingcart.config;
+package com.carlosoliveira.ecommerce.shoppingcart.infrastructure.messaging;
 
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;

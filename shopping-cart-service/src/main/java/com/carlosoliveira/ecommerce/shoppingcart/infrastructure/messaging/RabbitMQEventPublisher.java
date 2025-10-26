@@ -1,6 +1,6 @@
 package com.carlosoliveira.ecommerce.shoppingcart.infrastructure.messaging;
 
-import com.carlosoliveira.ecommerce.shoppingcart.config.RabbitMQConfig;
+import com.carlosoliveira.ecommerce.shoppingcart.application.ports.EventPublisher;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.events.CartItemQuantityUpdatedEvent;
 import com.carlosoliveira.ecommerce.shoppingcart.domain.events.ItemAddedToCartEvent;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +11,12 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class CartEventPublisher {
+public class RabbitMQEventPublisher implements EventPublisher {
 
     private final RabbitTemplate rabbitTemplate;
 
-    public void handleItemAddedToCartEvent(ItemAddedToCartEvent event) {
+    @Override
+    public void publish(ItemAddedToCartEvent event) {
         try {
             rabbitTemplate.convertAndSend(
                     RabbitMQConfig.CART_EVENTS_EXCHANGE,
@@ -28,7 +29,8 @@ public class CartEventPublisher {
         }
     }
 
-    public void handleCartItemQuantityUpdatedEvent(CartItemQuantityUpdatedEvent event) {
+    @Override
+    public void publish(CartItemQuantityUpdatedEvent event) {
         try {
             rabbitTemplate.convertAndSend(
                     RabbitMQConfig.CART_EVENTS_EXCHANGE,
